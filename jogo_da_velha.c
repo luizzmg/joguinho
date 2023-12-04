@@ -1,18 +1,21 @@
 #include <stdio.h>
+#include <string.h>
 
-int minimax(char tabuleiro[9], int turno, int primeira_vez);
-int checar_vitoria(char tabuleiro[9]);
-void mostrar(char tab[9]);
+int minimax(char tabuleiro[10], int turno, int primeira_vez);
+int checar_vitoria(char tabuleiro[10]);
+void mostrar(char tab[10]);
 int min(int a, int b);
 int max(int a, int b);
 char *copiar(char *vetor);
 void menu();
 void jogador();
-int preenchidos(char tab[9]);
+int preenchidos(char tab[10]);
 char tab_global[] = {'_','_','_','_','_','_','_','_','_'};
 char simbolo_jogador;
 
 int main(void){
+
+    goto teste;
 
     char opcao;
 
@@ -28,9 +31,26 @@ int main(void){
     else{
         menu();
     }
+
+    teste:
+
+    char tab[10] = {'_','_','_','_','_','_','_','_','_'};
+
+    char novo[10];
+
+    strcpy(novo, tab);
+
+    tab[3] = 'x';
+
+    mostrar(tab);
+
+    mostrar(novo);
+
 }
 
-int minimax(char tabuleiro[9], int turno, int primeira_vez){
+int minimax(char tabuleiro[10], int turno, int primeira_vez){
+    
+    printf("Chamada");
     
     turno ++;
 
@@ -82,7 +102,7 @@ int minimax(char tabuleiro[9], int turno, int primeira_vez){
     if(primeira_vez == 1){tab_global[backup] = jogador_vez;}    
     return menos_pior;
 }
-void mostrar(char tab[9]){
+void mostrar(char tab[10]){
     for(int i = 0; i <= 6; i += 3){
 
     printf("%c|%c|%c", tab[i], tab[i+1], tab[i+2]);
@@ -98,29 +118,29 @@ int max(int a, int b){
     if(a>b){return a;}
     else{return b;}
 }
-char *copiar(char *vetor){
-    char copiado[9];
+char *copiar(char vetor[10]){
+    char copiado[10];
 
-    int i = 0, continuar = 1;
-
-    while(continuar > 0){
-        
-        if(vetor[i] == '\0'){return copiado;}
-
-        else{copiado[i] = vetor[i];}
-
-        i++;
+    for (int i = 0; i <= 9; i++){
+        copiado[i] = vetor[i];
     }
+
+    return &copiado[0];
 }
 void menu(){
     printf("Menu\n\n");
 
-    if(preenchidos(tab_global == 9)){
-        printf("terminou\n\n");
-        fim_jogo();
-    }
+    // if(preenchidos(tab_global) == 9){
+    //     printf("terminou\n\n");
+    //     fim_jogo();
+    // }
 
+    printf("Primeira chamada");
+    
     minimax(copiar(tab_global), 1, 1);
+    
+    printf("Continuou");
+    
     jogador();
 }
 void jogador(){
@@ -137,7 +157,8 @@ void jogador(){
 
     menu();
 }
-int preenchidos(char tab[9]){
+int preenchidos(char tab[10]){
+    printf("Func preenchidos");
     int num = 0;
 
     for(int i = 0; i < 9; i++){
@@ -148,7 +169,7 @@ int preenchidos(char tab[9]){
 
     return num;
 }
-int checar_vitoria(char tabuleiro[9]){
+int checar_vitoria(char tabuleiro[10]){
     /*
     0|1|2
     2|3|4
