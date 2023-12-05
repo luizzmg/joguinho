@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 
 int minimax(int turno, int primeiro_nivel);
 
@@ -12,25 +11,40 @@ char tab_global[10] = {'_','_','_','_','_','_','_','_','_'};
 
 int main(void){
     printf("Bem-vindo ao jogo da velha humano vs maquina!\n");
-    printf("Com qual voce vai jogar?\n\n");
+    menu();
 
-    printf("Digite 'x' ou 'o' : ");
-    scanf("%c", &simbolo_jogador);
-
-    if(simbolo_jogador == 'x'){
-        num_vit_jogador = 1;
-        turno_global = 4;
-        jogador();
-    }
-    else{
-        num_vit_jogador = -1;
-        turno_global = 1;
-        maquina();
-    }
-    
     return 0;
 }
+void menu()
+{
+    printf("Com qual voce vai jogar? (obs: o 'x' sempre começa)\n\n");
+    printf("Digite x ou o : ");
+    scanf("%c", &simbolo_jogador);
 
+    if(simbolo_jogador == 'x' || simbolo_jogador == 'X'){
+        num_vit_jogador = 1;
+        turno_global = 4;
+
+        // turno com num par que vai ser somado no inicio do minimax.
+        // a jogada da máquina vai ser um 'o'
+
+        jogador(); // o 'x' sempre começa (nesse caso o jogador)
+    }
+    else if (simbolo_jogador == 'o' || simbolo_jogador == 'O'){
+        num_vit_jogador = -1;
+        turno_global = 1;
+
+        // turno com num impar que vai ser somado no inicio do minimax.
+        // a jogada da máquina vai ser um 'x'
+
+        maquina(); // o 'x' sempre começa (nesse caso a máquina)
+    }
+    else{
+        printf("Opcao invalida.\n");
+        menu();
+    }
+    return 0;
+}
 int minimax(int turno, int primeiro_nivel) // algoritmo protagonista de IA
 {
     /*
@@ -104,8 +118,9 @@ int minimax(int turno, int primeiro_nivel) // algoritmo protagonista de IA
             }
         }
     }
-    if(primeiro_nivel == 1){
-        tab_global[backup] = simbolo_vez;
+    if(primeiro_nivel == 1) // quando estamos na raiz da arvore de simulação
+    {
+        tab_global[backup] = simbolo_vez; // fazendo a melhor jogada
     }
     return menos_pior;
 }
