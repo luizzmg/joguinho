@@ -1,160 +1,208 @@
 #include <stdio.h>
 #include <string.h>
 
-int minimax(char* tab, int turno, int primeira_vez);
-int checar_vitoria(char tabuleiro[10]);
-void mostrar(char tab[10]);
-void menu();
-void jogador();
-void fim_jogo();
-int preenchidos(char tab[10]);
+int minimax(int turno, int primeiro_nivel);
 
+int checar_vitoria(), preenchidos(), min(int a, int b), max(int a, int b);
+void mostrar(), maquina(), jogador(), fim_jogo();
+
+int turno_global, num_vit_jogador;
 char simbolo_jogador;
-char* tab_global = "_________";
-
-int turno_global;
+char tab_global[10] = {'_','_','_','_','_','_','_','_','_'};
 
 int main(void){
-
     printf("Bem-vindo ao jogo da velha humano vs maquina!\n");
     printf("Com qual voce vai jogar?\n\n");
 
     printf("Digite 'x' ou 'o' : ");
     scanf("%c", &simbolo_jogador);
 
-    mostrar(tab_global);
-
     if(simbolo_jogador == 'x'){
+        num_vit_jogador = 1;
         turno_global = 4;
         jogador();
     }
     else{
+        num_vit_jogador = -1;
         turno_global = 1;
-        menu();
+        maquina();
     }
+    
+    return 0;
 }
 
-int minimax(char* tab, int turno, int primeira_vez){
+int minimax(int turno, int primeiro_nivel) // algoritmo protagonista de IA
+{
+    /*
+    Essa parte do código é interessante.
+
+    Foi difícil conseguir aplicar esse algoritmo,
+    mas aí está ele.
+    */    
+
+    int teste, menos_pior = 0, backup = 20, novo;
+    char simbolo_vez;
+
+    teste = checar_vitoria();
+    
+    if(teste != 10){
+        return teste; // chegamos numa folha da árvore
+    }
+
+    // temos que considerar as duas possibilidades de vez
+    // o algoritmo faz a melhor escolha para cada simbolo
+    // dependendo do nivel da arvore, pode ser a vez de x ou de o 
 
     turno ++;
 
-    int resultado = checar_vitoria(tab);
-
-    if (resultado != 10){
-        return resultado;
-    }
-    int desejo = 0;
-    char jogador_vez;
-
     if(turno % 2 == 0){
-        jogador_vez = 'x';
-        int desejo = 1;
+        simbolo_vez = 'x'; 
+        // vez de x (turnos pares)
+        menos_pior = -1;   
+        // ele vai procurar algo menos pior que isso
+        // ou seja, maior, que é o max
     }
     else{
-        jogador_vez = 'o';
-        int desejo = -1;
+        simbolo_vez = 'o'; 
+        // vez de o (turnos ímpares)
+        menos_pior = 1;    
+        // ele vai procurar algo menos pior que isso
+        // ou seja, menor, que é o min 
     }
 
-    int backup = 0;
-
     for(int i = 0; i < 9; i++){
-        if(tab[i] == '_'){
+        if(tab_global[i] == '_'){
+            /* 
+            agora vamos fazer e desfazer cada jogada
+            em cada possibilidade vazia no tabuleiro
+            para ver se nesse galho dá para ter vitória
+            */
 
-            tab[i] = jogador_vez;
+            tab_global[i] = simbolo_vez;
 
-            int resultado = minimax(tab, turno, 0);
+            int resultado = minimax(turno, 0);
 
-            tab[i] = '_';
+            tab_global[i] = '_';
 
-            if(resultado == desejo){
-                if(primeira_vez == 1){
-                    tab[i] = jogador_vez;
+            if(simbolo_vez == 'x') // quando é vez de x
+            {    
+                novo = max(menos_pior, resultado);
+
+                if(primeiro_nivel == 1 && menos_pior < novo){
+                    backup = i;
                 }
-                return desejo;
+                menos_pior = novo;
             }
-            if(resultado == 0){
-                backup = i;
+            else if(simbolo_vez == 'o') // quando é vez de o
+            {
+                novo = min(menos_pior, resultado);
+                
+                if(primeiro_nivel == 1 && menos_pior > novo){
+                    backup = i;
+                }
+                menos_pior = novo;
             }
         }
     }
-    if(primeira_vez == 1){
-        tab[backup] = jogador_vez;
-    }    
-    return 0;
+    if(primeiro_nivel == 1){
+        tab_global[backup] = simbolo_vez;
+    }
+    return menos_pior;
 }
-void mostrar(char tab[10]){
+void mostrar()        // exibe o tabuleiro atual
+{
     for(int i = 0; i <= 6; i += 3){
 
-    printf("%c|%c|%c", tab[i], tab[i+1], tab[i+2]);
+    printf("%c|%c|%c", tab_global[i], tab_global[i+1], tab_global[i+2]);
     
     printf("   %d|%d|%d\n",i+1,i+2,i+3);
     }
 }
-void menu(){
-    
-    minimax(tab_global, turno_global, 1);
+void maquina()        // vez da máquina
+{
+    minimax(turno_global, 1);
 
     if(checar_vitoria(tab_global) != 10){
         fim_jogo();
     }
     else{jogador();}
 }
-void jogador(){
-    int local;
+void jogador()        // vez do jogador
+{
+    int local, perguntar = 1;
 
     mostrar(tab_global);
 
-    printf("\nEscolha o local onde vai jogar: ");
-    scanf("%d", &local);
+    do{ 
+        printf("\nEscolha o local onde vai jogar: ");
+        scanf("%d", &local);
 
-    tab_global[local -1] = simbolo_jogador;
-
-    if(checar_vitoria(tab_global) != 10){
-        fim_jogo();
+    if(tab_global[local - 1] != '_')
+    {
+        printf("\nEste local ja esta preenchido. Digite uma opcao valida.\n");
     }
-    else{menu();}
-}
-int preenchidos(char tab[10]){
-    int num = 0;
+    else{
+        perguntar = 0;
+    }
+    }while(perguntar == 1);
 
-    for(int i = 0; i < 9; i++){
-        if(tab[i] != '_'){
-            num  ++;
+    tab_global[local -1] = simbolo_jogador; // o usuário jogou
+
+    if(checar_vitoria() != 10){
+        fim_jogo(); // acabou
+    }
+    else{maquina();} // vez da máquina
+}
+int preenchidos()     // retorna a quantidade de espaços preenchidos
+{
+    int cont = 0;
+
+    for(int i = 0; i < 9; i++) // percorrendo todos os espaços
+    {
+        if(tab_global[i] != '_') // está preenchido
+        {
+            cont  ++;
         }
     }
-    return num;
+    return cont;
 }
-int checar_vitoria(char *tabuleiro){
-    /*
-    0|1|2
-    2|3|4
-    5|6|7
-    */
+int checar_vitoria()  // retorna 0 se velha, +1 se x, -1 se o, e 0 se NDA
+{
+    int num_vitoria = 1; //na primeira passada é assim 
+    char letra = 'x';    // na segunda muda pq vamos olhar 'o'
 
-    char letra[] = {'x','o'};
     
-    // Posições de Vitória
-    int pv[8][3] = {{0,1,2},{3,4,5},{6,7,8},{0,3,6},{1,4,7},{2,5,8},{0,4,8},{2,4,6}};
-    
-    for(int j = 0; j < 9; j++){
-        for(int i = 0; i < 2; i++){
-            if(tabuleiro[pv[j][0]]==letra[i] && tabuleiro[pv[j][1]]==letra[i] && tabuleiro[pv[j][2]]==letra[i]){
-                
-                if(letra[i] == 'x'){return 1;}
-
-                else{return -1;}
+    for(int k = 0; k<2; k++) // percorrendo 'x' (vence como +1) e 'o' (vence como -1)
+    {
+        for(int i = 0; i < 3; i+=3) // percorrendo as possibilidades horizontais e verticais
+        {
+            if(tab_global[i] == letra && tab_global[i+1] == letra && tab_global[i+2] == letra){
+                return num_vitoria; // vitoria horizontal
+            }
+            if(tab_global[i] == letra && tab_global[i+3] == letra && tab_global[i+6] == letra){
+                return num_vitoria; // vitoria vertical
             }
         }
-    }
-    
-    // se empatou
-    if(preenchidos(tabuleiro) == 9){
-        return 0;
-    }
 
-    return 10;
+        if(tab_global[0] == letra && tab_global[4] == letra && tab_global[8] == letra)
+        {
+            return num_vitoria; // vitoria diagonal assim: '-.
+        }
+        if(tab_global[2] == letra && tab_global[4] == letra && tab_global[6] == letra)
+        {
+            return num_vitoria; // vitoria diagonal assim: .-'
+        }
+        num_vitoria = -1; // trocando numero
+        letra = 'o';      // trocando a letra
+    }
+    if(preenchidos() == 9)
+    {
+        return 0; // se chegou aqui deu empate
+    }
+    return 10; // inconlusivo (nem vitoria nem empate)
 }
-void fim_jogo(){
+void fim_jogo()       // é chamada quando o jogo termina para finalizar
+{
     printf("\n\n\n\n\n");
 
     printf("O jogo terminou!\n\n");
@@ -163,51 +211,27 @@ void fim_jogo(){
 
     int resultado = checar_vitoria(tab_global);
 
-    switch (resultado)
+    if(resultado == num_vit_jogador)
     {
-    case 1:
-        if(simbolo_jogador == 'x'){
-            printf("Parabéns, você venceu...\n\n");
-            printf("Embora isso seja impossivel neste nivel de dificuldade\n\n");
-        }
-        else{
-            printf("Nao foi dessa vez...\n\n");
-            printf("Parece que voce perdeu\n\n");
-        }
-        break;
-
-    case -1:
-        if(simbolo_jogador == 'o'){
-            printf("Parabéns, você venceu...\n\n");
-            printf("Embora isso seja impossivel neste nivel de dificuldade\n\n");
-        }
-        else{
-            printf("Nao foi dessa vez...\n\n");
-            printf("Parece que voce perdeu\n\n");
-        }
-    
-    default:
+        printf("Parabens, voce venceu...\n\n");
+        printf("Embora isso seja impossivel neste nivel de dificuldade\n\n");
+    }
+    else if(resultado == num_vit_jogador * -1)
+    {
+        printf("Nao foi dessa vez...\n\n");
+        printf("Parece que voce perdeu\n\n");
+    }
+    else{
         printf("Parece que temos um empate.\n\n");
-        break;
     }
-
-    char opcao;
-    int stop = 0;
-
-    while(stop == 0){
-        printf("Voce quer jogar de novo?");
-        printf("Digite s ou n");
-        scanf("%d", opcao);
-
-        if(opcao == 's' || opcao == 'S'){
-            main();
-        }
-        else if(opcao != 'n' && opcao != 'N'){
-            printf("Digite s ou n");
-            scanf("%d", opcao);
-        }
-        else{
-            stop = 1;
-        }
-    }
+}
+int min(int a, int b) // escolhe o menor entre dois valores
+{
+    if(a<b){return a;}
+    else{return b;}
+}
+int max(int a, int b) // escolhe o maior entre dois valores
+{
+    if(a>b){return a;}
+    else{return b;}
 }
