@@ -19,7 +19,7 @@
         O jogo a seguir se baseia no algoritmo minimax
         para fazer as escolhas da máquina no jogo da velha.
 
-        O algorítmo minimax se baseia na construção de uma árvore
+        O algorítmo minimax consiste na construção de uma árvore
         que simula cada possível jogada, e escolhe a melhor.
 
         Foi uma tarefa desafiadora implementar este algorítmo,
