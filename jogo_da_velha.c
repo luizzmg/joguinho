@@ -37,9 +37,21 @@
         De certa forma é divertido tentar, mas as unicas possibilidades
         para o jogador são empate e derrota.
     -
+
+
+
+    == Sobre a compatibilidade do código:
+
+        Algumas coisas, como acentos e outro caracteres especiais, 
+        poderiam ser colocadas com o uso de bibliotecas. Porém, algumas
+        dessas bibliotecas funcionam de forma diferente em diferentes
+        sistemas operacionais. Foi decidido não incluir acentos, e colocar várias
+        quebras de linha nos lugares onde poderia limpar o terminal.
+    -
 */
 
 #include <stdio.h>
+#include <string.h>
 
 int minimax(int turno, int primeiro_nivel);
 
@@ -49,9 +61,10 @@ void mostrar(), maquina(), jogador(), fim_jogo(), menu();
 int turno_global, num_vit_jogador;
 char simbolo_jogador;
 char tab_global[10] = {'_','_','_','_','_','_','_','_','_'};
+char vazio[] = "_________";
 
 int main(void){
-    printf("Bem-vindo ao jogo da velha humano vs maquina!\n");
+    printf("\n\n\n\nBem-vindo ao jogo da velha humano vs maquina!\n");
     menu();
 
     return 0;
@@ -77,6 +90,8 @@ void menu()           // exibe o menu principal
 
         // turno com num impar que vai ser somado no inicio do minimax.
         // a jogada da máquina vai ser um 'x'
+
+        printf("\n\n\nO x sempre começa.\n");
 
         maquina(); // o 'x' sempre começa (nesse caso a máquina)
     }
@@ -187,6 +202,8 @@ void jogador()        // vez do jogador
     int local, perguntar = 1;
 
     do{ 
+        printf("\n\n\n\n");
+
         mostrar(tab_global);
         printf("\nEscolha o local onde vai jogar: ");
         scanf("%d", &local);
@@ -274,28 +291,28 @@ void fim_jogo()       // é chamada quando o jogo termina para finalizar
 
     if(resultado == num_vit_jogador)
     {
-        printf("\nParabens, voce venceu...\n\n");
+        printf("\nParabens, voce venceu...\n");
         printf("\nEmbora isso seja impossivel neste nivel de dificuldade\n\n");
     }
     else if(resultado == num_vit_jogador * -1)
     {
-        printf("\nNao foi dessa vez...\n\n");
-        printf("\nParece que voce perdeu\n\n");
+        printf("\nNao foi dessa vez...\n");
+        printf("\nParece que voce perdeu\n");
     }
     else{
-        printf("\nParece que temos um empate.\n\n");
+        printf("\nParece que temos um empate.\n");
     }
 
-    char opcao = '#';
+    int opcao;
 
-    do{
-    printf("Quer jogar novamente?\nDigite s ou n: ");
-    scanf("%c", &opcao);
+    printf("Quer jogar novamente? \n1 - Sim\n2 - Nao\n\nOpcao: ");
+    scanf("%d", &opcao);
 
-    if(opcao == 's' || opcao == 'S'){
+    if(opcao == 1){
+        strcpy(tab_global, vazio);
+        getchar();
         menu();
     }
-    }while(opcao != '#');
 }
 int min(int a, int b) // escolhe o menor entre dois valores
 {
