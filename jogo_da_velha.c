@@ -84,7 +84,6 @@ void menu()           // exibe o menu principal
         printf("Opcao invalida.\n");
         menu();
     }
-    return 0;
 }
 int minimax(int turno, int primeiro_nivel) // algoritmo protagonista de IA
 {
