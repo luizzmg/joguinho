@@ -1,9 +1,50 @@
+/*
+    ===============================
+    Jogo da velha Humano vs Máquina
+    ===============================
+
+    == FICR - Faculdade Católica Imaculada Conceicão do Recife
+    == ADS - Curso superior em Análise e Desenvolvimento de Sistemas
+    == 2º Período
+    == Disciplina: Estrutura de Dados
+    == Prof: Fred Lucena
+
+    == Alunos do grupo:
+    == Luiz Miguel Veloso, Rodrigo Albuquerque, Alicia Vital, Juan Victor, Gledson Pessoa
+
+
+
+    == Sobre o jogo:
+
+        O jogo a seguir se baseia no algoritmo minimax
+        para fazer as escolhas da máquina no jogo da velha.
+
+        O algorítmo minimax se baseia na construção de uma árvore
+        que simula cada possível jogada, e escolhe a melhor.
+
+        Foi uma tarefa desafiadora implementar este algorítmo,
+        mas no final ele funcionou.
+
+        Espero que goste.
+    -
+
+
+
+    == OBSERVAÇÃO:
+
+        O jogo é impossível de ganhar.
+        Sim, é impossível ganhar da máquina com este algorítmo.
+        De certa forma é divertido tentar, mas as unicas possibilidades
+        para o jogador são empate e derrota.
+    -
+*/
+
 #include <stdio.h>
 
 int minimax(int turno, int primeiro_nivel);
 
 int checar_vitoria(), preenchidos(), min(int a, int b), max(int a, int b);
-void mostrar(), maquina(), jogador(), fim_jogo();
+void mostrar(), maquina(), jogador(), fim_jogo(), menu();
 
 int turno_global, num_vit_jogador;
 char simbolo_jogador;
@@ -15,9 +56,9 @@ int main(void){
 
     return 0;
 }
-void menu()
+void menu()           // exibe o menu principal
 {
-    printf("Com qual voce vai jogar? (obs: o 'x' sempre começa)\n\n");
+    printf("Com qual voce vai jogar? (obs: o 'x' sempre comeca)\n\n");
     printf("Digite x ou o : ");
     scanf("%c", &simbolo_jogador);
 
@@ -146,15 +187,21 @@ void jogador()        // vez do jogador
 {
     int local, perguntar = 1;
 
-    mostrar(tab_global);
-
     do{ 
+        mostrar(tab_global);
         printf("\nEscolha o local onde vai jogar: ");
         scanf("%d", &local);
+        printf("\n\n\n");
 
-    if(tab_global[local - 1] != '_')
+    if(local < 1 || local > 9)
+    {
+        printf("Digite uma opcao valida\n");
+    }
+    else if(tab_global[local - 1] != '_')
+        
     {
         printf("\nEste local ja esta preenchido. Digite uma opcao valida.\n");
+        
     }
     else{
         perguntar = 0;
