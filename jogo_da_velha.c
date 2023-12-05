@@ -274,16 +274,16 @@ void fim_jogo()       // é chamada quando o jogo termina para finalizar
 
     if(resultado == num_vit_jogador)
     {
-        printf("Parabens, voce venceu...\n\n");
-        printf("Embora isso seja impossivel neste nivel de dificuldade\n\n");
+        printf("\nParabens, voce venceu...\n\n");
+        printf("\nEmbora isso seja impossivel neste nivel de dificuldade\n\n");
     }
     else if(resultado == num_vit_jogador * -1)
     {
-        printf("Nao foi dessa vez...\n\n");
-        printf("Parece que voce perdeu\n\n");
+        printf("\nNao foi dessa vez...\n\n");
+        printf("\nParece que voce perdeu\n\n");
     }
     else{
-        printf("Parece que temos um empate.\n\n");
+        printf("\nParece que temos um empate.\n\n");
     }
 }
 int min(int a, int b) // escolhe o menor entre dois valores
