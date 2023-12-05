@@ -285,18 +285,17 @@ void fim_jogo()       // é chamada quando o jogo termina para finalizar
     else{
         printf("\nParece que temos um empate.\n\n");
     }
-    /*
 
-    char opcao;
+    char opcao = '#';
 
-    printf("Quer jogar novamente?\nDigite s ou n");
+    do{
+    printf("Quer jogar novamente?\nDigite s ou n: ");
     scanf("%c", &opcao);
 
     if(opcao == 's' || opcao == 'S'){
-
+        menu();
     }
-
-    */
+    }while(opcao != '#');
 }
 int min(int a, int b) // escolhe o menor entre dois valores
 {
