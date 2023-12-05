@@ -1,63 +1,47 @@
 #include <stdio.h>
 #include <string.h>
 
-int minimax(char tabuleiro[10], int turno, int primeira_vez);
+int minimax(char* tab, int turno, int primeira_vez);
 int checar_vitoria(char tabuleiro[10]);
 void mostrar(char tab[10]);
-int min(int a, int b);
-int max(int a, int b);
-char *copiar(char *vetor);
 void menu();
 void jogador();
 int preenchidos(char tab[10]);
-char tab_global[] = {'_','_','_','_','_','_','_','_','_'};
+
 char simbolo_jogador;
+char* tab_global = "_________";
+
+int turno_global;
 
 int main(void){
-
-    goto teste;
-
-    char opcao;
 
     printf("Bem-vindo ao jogo da velha humano vs maquina!\n");
     printf("Com qual voce vai jogar?\n\n");
 
     printf("Digite 'x' ou 'o' : ");
-    scanf(" %c", &opcao);
+    scanf("%c", &simbolo_jogador);
 
-    if(opcao == 'x'){
+    mostrar(tab_global);
+
+    if(simbolo_jogador == 'x'){
+        turno_global = 4;
         jogador();
     }
     else{
+        turno_global = 1;
         menu();
     }
-
-    teste:
-
-    char tab[10] = {'_','_','_','_','_','_','_','_','_'};
-
-    char novo[10];
-
-    strcpy(novo, tab);
-
-    tab[3] = 'x';
-
-    mostrar(tab);
-
-    mostrar(novo);
-
 }
 
-int minimax(char tabuleiro[10], int turno, int primeira_vez){
-    
-    printf("Chamada");
-    
+int minimax(char* tab, int turno, int primeira_vez){
+
     turno ++;
 
-    if(preenchidos(tabuleiro) == 9){
-        return checar_vitoria(tabuleiro);
-    }
+    int resultado = checar_vitoria(tab);
 
+    if (resultado != 10){
+        return resultado;
+    }
     int desejo = 0;
     char jogador_vez;
 
@@ -65,42 +49,37 @@ int minimax(char tabuleiro[10], int turno, int primeira_vez){
         jogador_vez = 'x';
         int desejo = 1;
     }
-
     else{
         jogador_vez = 'o';
         int desejo = -1;
     }
 
-    int menos_pior, backup = 0;
+    int backup = 0;
 
     for(int i = 0; i < 9; i++){
-        if(tabuleiro[i] == '_'){
+        if(tab[i] == '_'){
 
-            tabuleiro[i] = jogador_vez;
+            tab[i] = jogador_vez;
 
-            int resultado = minimax(tabuleiro, turno, 0);
+            int resultado = minimax(tab, turno, 0);
 
-            tabuleiro[i] = '_';
+            tab[i] = '_';
 
-            if(jogador_vez == 'x'){
-                menos_pior = max(-1, resultado);
-            }
-            else{
-                menos_pior = min(1, resultado);
-            }
-
-            if(menos_pior == desejo){
-                if(primeira_vez == 1){tab_global[i] = jogador_vez;}
+            if(resultado == desejo){
+                if(primeira_vez == 1){
+                    tab[i] = jogador_vez;
+                }
                 return desejo;
             }
-            if(menos_pior == 0){
+            if(resultado == 0){
                 backup = i;
             }
         }
     }
-
-    if(primeira_vez == 1){tab_global[backup] = jogador_vez;}    
-    return menos_pior;
+    if(primeira_vez == 1){
+        tab[backup] = jogador_vez;
+    }    
+    return 0;
 }
 void mostrar(char tab[10]){
     for(int i = 0; i <= 6; i += 3){
@@ -110,42 +89,18 @@ void mostrar(char tab[10]){
     printf("   %d|%d|%d\n",i+1,i+2,i+3);
     }
 }
-int min(int a, int b){
-    if(a<b){return a;}
-    else{return b;}
-}
-int max(int a, int b){
-    if(a>b){return a;}
-    else{return b;}
-}
-char *copiar(char vetor[10]){
-    char copiado[10];
-
-    for (int i = 0; i <= 9; i++){
-        copiado[i] = vetor[i];
-    }
-
-    return &copiado[0];
-}
 void menu(){
-    printf("Menu\n\n");
 
-    // if(preenchidos(tab_global) == 9){
+    // if(checar_vitoria(tab_global) != 10){
     //     printf("terminou\n\n");
     //     fim_jogo();
     // }
-
-    printf("Primeira chamada");
     
-    minimax(copiar(tab_global), 1, 1);
-    
-    printf("Continuou");
+    minimax(tab_global, turno_global, 1);
     
     jogador();
 }
 void jogador(){
-    printf("Jogador\n\n");
-    
     int local;
 
     mostrar(tab_global);
@@ -158,7 +113,6 @@ void jogador(){
     menu();
 }
 int preenchidos(char tab[10]){
-    printf("Func preenchidos");
     int num = 0;
 
     for(int i = 0; i < 9; i++){
@@ -169,7 +123,7 @@ int preenchidos(char tab[10]){
 
     return num;
 }
-int checar_vitoria(char tabuleiro[10]){
+int checar_vitoria(char *tabuleiro){
     /*
     0|1|2
     2|3|4
@@ -193,7 +147,11 @@ int checar_vitoria(char tabuleiro[10]){
     }
     
     // se empatou
-    return 0;
+    if(preenchidos(tabuleiro) == 9){
+        return 0;
+    }
+
+    return 10;
 }
 void fim_jogo(){
     printf("\n\n\n\n\n");
