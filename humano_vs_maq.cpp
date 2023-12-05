@@ -192,7 +192,7 @@ void maquina()        // vez da máquina
 {
     minimax(turno_global, 1);
 
-    if(checar_vitoria(tab_global) != 10){
+    if(checar_vitoria() != 10){
         fim_jogo();
     }
     else{jogador();}
@@ -204,7 +204,7 @@ void jogador()        // vez do jogador
     do{ 
         printf("\n\n\n\n");
 
-        mostrar(tab_global);
+        mostrar();
         printf("\nEscolha o local onde vai jogar: ");
         scanf("%d", &local);
         printf("\n\n\n");
@@ -287,9 +287,9 @@ void fim_jogo()       // é chamada quando o jogo termina para finalizar
 
     printf("O jogo terminou!\n\n");
 
-    mostrar(tab_global);
+    mostrar();
 
-    int resultado = checar_vitoria(tab_global);
+    int resultado = checar_vitoria();
 
     if(resultado == num_vit_jogador)
     {
