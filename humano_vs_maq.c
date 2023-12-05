@@ -25,7 +25,7 @@
         Foi uma tarefa desafiadora implementar este algorítmo,
         mas no final ele funcionou.
 
-        Espero que goste.
+        Esperamos que goste.
     -
 
 
