@@ -6,6 +6,7 @@ int checar_vitoria(char tabuleiro[10]);
 void mostrar(char tab[10]);
 void menu();
 void jogador();
+void fim_jogo();
 int preenchidos(char tab[10]);
 
 char simbolo_jogador;
@@ -90,15 +91,13 @@ void mostrar(char tab[10]){
     }
 }
 void menu(){
-
-    // if(checar_vitoria(tab_global) != 10){
-    //     printf("terminou\n\n");
-    //     fim_jogo();
-    // }
     
     minimax(tab_global, turno_global, 1);
-    
-    jogador();
+
+    if(checar_vitoria(tab_global) != 10){
+        fim_jogo();
+    }
+    else{jogador();}
 }
 void jogador(){
     int local;
@@ -110,7 +109,10 @@ void jogador(){
 
     tab_global[local -1] = simbolo_jogador;
 
-    menu();
+    if(checar_vitoria(tab_global) != 10){
+        fim_jogo();
+    }
+    else{menu();}
 }
 int preenchidos(char tab[10]){
     int num = 0;
@@ -120,7 +122,6 @@ int preenchidos(char tab[10]){
             num  ++;
         }
     }
-
     return num;
 }
 int checar_vitoria(char *tabuleiro){
@@ -157,4 +158,56 @@ void fim_jogo(){
     printf("\n\n\n\n\n");
 
     printf("O jogo terminou!\n\n");
+
+    mostrar(tab_global);
+
+    int resultado = checar_vitoria(tab_global);
+
+    switch (resultado)
+    {
+    case 1:
+        if(simbolo_jogador == 'x'){
+            printf("Parabéns, você venceu...\n\n");
+            printf("Embora isso seja impossivel neste nivel de dificuldade\n\n");
+        }
+        else{
+            printf("Nao foi dessa vez...\n\n");
+            printf("Parece que voce perdeu\n\n");
+        }
+        break;
+
+    case -1:
+        if(simbolo_jogador == 'o'){
+            printf("Parabéns, você venceu...\n\n");
+            printf("Embora isso seja impossivel neste nivel de dificuldade\n\n");
+        }
+        else{
+            printf("Nao foi dessa vez...\n\n");
+            printf("Parece que voce perdeu\n\n");
+        }
+    
+    default:
+        printf("Parece que temos um empate.\n\n");
+        break;
+    }
+
+    char opcao;
+    int stop = 0;
+
+    while(stop == 0){
+        printf("Voce quer jogar de novo?");
+        printf("Digite s ou n");
+        scanf("%d", opcao);
+
+        if(opcao == 's' || opcao == 'S'){
+            main();
+        }
+        else if(opcao != 'n' && opcao != 'N'){
+            printf("Digite s ou n");
+            scanf("%d", opcao);
+        }
+        else{
+            stop = 1;
+        }
+    }
 }
