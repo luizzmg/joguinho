@@ -91,7 +91,7 @@ void menu()           // exibe o menu principal
         // turno com num impar que vai ser somado no inicio do minimax.
         // a jogada da máquina vai ser um 'x'
 
-        printf("\n\n\nO x sempre começa.\n");
+        printf("\n\n\nO x sempre comeca.\n");
 
         maquina(); // o 'x' sempre começa (nesse caso a máquina)
     }
@@ -252,11 +252,13 @@ int checar_vitoria()  // retorna 0 se velha, +1 se x, -1 se o, e 0 se NDA
     
     for(int k = 0; k<2; k++) // percorrendo 'x' (vence como +1) e 'o' (vence como -1)
     {
-        for(int i = 0; i < 3; i+=3) // percorrendo as possibilidades horizontais e verticais
+        for(int i = 0; i <= 6 ; i+= 3) // percorrendo as possibilidades horizontais e verticais
         {
             if(tab_global[i] == letra && tab_global[i+1] == letra && tab_global[i+2] == letra){
                 return num_vitoria; // vitoria horizontal
             }
+        }
+        for (int i = 0; i< 3; i++){
             if(tab_global[i] == letra && tab_global[i+3] == letra && tab_global[i+6] == letra){
                 return num_vitoria; // vitoria vertical
             }
